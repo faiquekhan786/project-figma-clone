@@ -5,28 +5,20 @@ const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 let shapes = [
     {
-        bx = 100,
-        by = 100,
-        bwidth = 200,
-        bheight = 150,
-        bcolor = "blue"
-    }
+        bx : 100,
+        by : 100,
+        bwidth : 200,
+        bheight : 150,
+        bcolor : "blue"
+    },
     {
-        rx = 500,
-        ry = 100,
-        rwidth = 200,
-        rheight = 150,
-        rcolor = "red"
+        rx : 500,
+        ry : 100,
+        rwidth : 200,
+        rheight : 150,
+        rcolor : "red"
     }
 ]
-// 3. Pick a color (Blue)
-
-let redx = 500;
-let redy = 100;
-let redwidth = 200;
-let redheight = 150;
-// 3. Pick a color (Red)
-
 
 // THE RENDER LOOP
 function draw() {
