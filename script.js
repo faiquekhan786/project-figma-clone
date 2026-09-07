@@ -3,35 +3,37 @@ const canvas = document.getElementById("myCanvas");
 
 // 2. Tell JavaScript we want to draw in 2D
 const ctx = canvas.getContext("2d");
+//defines array so that we can put unlimited box
 let shapes = [
     {
-        bx : 100,
-        by : 100,
-        bwidth : 200,
-        bheight : 150,
-        bcolor : "blue"
+        x : 100,
+        y : 100,
+        width : 200,
+        height : 150,
+        color : "blue"
     },
     {
-        rx : 500,
-        ry : 100,
-        rwidth : 200,
-        rheight : 150,
-        rcolor : "red"
+        x : 500,
+        y : 100,
+        width : 200,
+        height : 150,
+        color : "red"
     }
 ]
 
-// THE RENDER LOOP
 function draw() {
-    // 1. Erase the entire canvas
+    // 1. Erase the canvas ONCE before we start drawing
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Draw Blue Box
-    ctx.fillStyle = "blue";
-    ctx.fillRect(bluex, bluey, bluewidth, blueheight);
+    // 2. Loop through the array
+    for (let i = 0; i < shapes.length; i++) {
+        
+        // Grab the current object we are looking at in the list
+        let currentShape = shapes[i]; 
 
-    // 3. Draw Red Box
-    ctx.fillStyle = "red";
-    ctx.fillRect(redx, redy, redwidth, redheight);
+        ctx.fillStyle = currentShape.color; 
+        ctx.fillRect(currentShape.x, currentShape.y, currentShape.width, currentShape.height);
+    }
 }
 // Call it once so the boxes appear when the page loads
 draw();
@@ -45,45 +47,43 @@ let dragOffsetY = 0;
 
 //click movement by event listner
 
+selectedShape = null; 
+
 canvas.addEventListener("mousedown", function(event) {
     let mouseX = event.offsetX;
     let mouseY = event.offsetY;
 
-    if (mouseX > bluex && mouseX < bluex + bluewidth && mouseY > bluey && mouseY < bluey + blueheight) {
-        isDragging = true;
-        selectedShape = "blue";
-        // Calculate where inside the box we clicked
-        dragOffsetX = mouseX - bluex; 
-        dragOffsetY = mouseY - bluey;
-    } 
-    else if (mouseX > redx && mouseX < redx + redwidth && mouseY > redy && mouseY < redy + redheight) {
-        isDragging = true;
-        selectedShape = "red";
-        dragOffsetX = mouseX - redx;
-        dragOffsetY = mouseY - redy;
+    // Loop through our database of shapes to see if we clicked any of them
+    for (let i = 0; i < shapes.length; i++) {
+        let currentShape = shapes[i];
+
+        // Inside your mousedown event's for-loop...
+if (mouseX > currentShape.x && mouseX < currentShape.x + currentShape.width && mouseY > currentShape.y && mouseY < currentShape.y + currentShape.height) {
+    
+    isDragging = true;
+    selectedShape = currentShape; 
+    
+    dragOffsetX = mouseX - currentShape.x;
+    dragOffsetY = mouseY - currentShape.y;
+
+    shapes.splice(i, 1); 
+
+    shapes.push(currentShape);
+}
     }
 });
 
-// 1. MOUSE MOVE: Update coordinates if we are dragging
+// mouse drag
 canvas.addEventListener("mousemove", function(event) {
-    // Only do the math if we are actually holding the mouse button down
     if (isDragging === true) {
         
         let mouseX = event.offsetX;
         let mouseY = event.offsetY;
 
-        // If the blue box is selected, update its variables
-        if (selectedShape === "blue") {
-            bluex = mouseX - dragOffsetX;
-            bluey = mouseY - dragOffsetY;
-        } 
-        // If the red box is selected, update its variables
-        else if (selectedShape === "red") {
-            redx = mouseX - dragOffsetX;
-            redy = mouseY - dragOffsetY;
-        }
+        selectedShape.x = mouseX - dragOffsetX;
+        selectedShape.y = mouseY - dragOffsetY;
 
-        // Instantly trigger the flipbook to erase and redraw at the new position
+        // Instantly trigger the flipbook to redraw
         draw(); 
     }
 });
@@ -93,3 +93,20 @@ canvas.addEventListener("mouseup", function(event) {
     isDragging = false;
     selectedShape = ""; // Clear the memory of which shape was held
 });
+
+
+
+// button for box
+const addBtn = document.getElementById("addBoxBtn");
+addBtn.addEventListener("click",function(){
+    let newBox = {
+        x: Math.random() * 600,
+        y: Math.random() * 600,
+        width: 200,
+        height: 150,
+        color: "green"
+    };
+    shapes.push(newBox);
+    draw();
+}
+)
